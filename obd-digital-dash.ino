@@ -87,7 +87,7 @@ void loop() {
 		// 1. get data
 		//status = DDGetDashData(d_data);
 		d_data.rpm = millis() % 10000;
-		d_data.fuel = 95.2f;
+		d_data.fuel = 0.95f;
 		d_data.coolant_temp = millis() % 99;
 		d_data.voltage = 12.1f;
 		d_data.boost_pressure = 10.4;

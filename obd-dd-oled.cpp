@@ -62,7 +62,7 @@ static void drawData(const DashData_s& data) {
 	// print fuel
 	display.setCursor(0, 24);
 	display.print("Fuel:  ");
-	display.print(data.fuel, 0);
+	display.print(data.fuel * 100.0f, 0);
 	display.setCursor(ralign(1), 24);
 	display.print('%');
 
