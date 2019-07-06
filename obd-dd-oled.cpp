@@ -14,6 +14,9 @@ static const char* modes[MODE_COUNT] = {
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 static int32_t dmode = 0;
+static byte _obdver = 0;
+
+static char* _vin = nullptr;
 
 static inline uint32_t ralign(const uint32_t& len) {
 	return 1 + SCREEN_WIDTH - (6 * len); // characters are 6px wide I think
@@ -23,7 +26,9 @@ static inline uint32_t calign(const uint32_t& len) {
 	return 1 + (SCREEN_WIDTH / 2) - (6 * len / 2);
 }
 
-void initOLED() {
+void initOLED(const byte& obdver) {
+	_obdver = obdver;
+
 	display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
 
 	// make sure the display is cleared
@@ -38,6 +43,10 @@ void initOLED() {
 }
 
 static void drawData(const DashData_s& data) {
+	if (_vin == nullptr) {
+		_vin = data.VIN;
+	}
+
 	display.setTextColor(BLACK, WHITE);
 	display.setCursor(0, 0);
 	display.print("Stat                              "); // make sure the whole top is white
@@ -95,7 +104,19 @@ static void drawInfo() {
 	display.setTextColor(WHITE, BLACK);
 
 	display.setCursor(0, 8);
-	display.print("Placeholder text");
+	if (_obdver) {
+		display.print("Adapter ver. ");
+		display.print(_obdver / 10);
+		display.print('.');
+		display.print(_obdver % 10);
+	} else {
+		display.print("No adapter found!");
+	}
+
+	if (_vin) {
+		display.setCursor(0, 16);
+		display.print(_vin);
+	}
 }
 
 void updateOLED(const DashData_s& data) {

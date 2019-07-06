@@ -2,23 +2,35 @@
 
 COBD obd;
 
+static char VIN[18] = "";
+
 bool DDGetDashData(DashData_s& data_out) {
 	return	DDGetBoostPSI(data_out.boost_pressure) &&
 			DDGetCoolantTempC(data_out.coolant_temp) &&
 			DDGetEngineRPM(data_out.rpm) &&
-			DDGetVehicleSpeed(data_out.speed);
+			DDGetVehicleSpeed(data_out.speed) &&
+			(data_out.VIN = VIN);
 }
 
 bool DDInitOBD(byte& version_out) {
 	version_out = obd.begin();
+	obd.setBaudRate(115200UL);
 
 	while (!obd.init());
 
 	if (!version_out) return false;
+
+	// get the VIN for use later (this is better than reading it more than once)
+	obd.getVIN(VIN, 18);
+	if (VIN[17]) { // VINs are 17 characters, and the 18th should be the null terminator
+		// not sure that the getVIN function does this, it seems it might not
+		VIN[17] = '\0';
+	}
+
 	return true;
 }
 
-bool DDGetBoostPSI(float& pressure_out) {
+bool DDGetBoostKPA(float& pressure_out) {
 	int manifold;
 	int barometer;
 
@@ -26,6 +38,13 @@ bool DDGetBoostPSI(float& pressure_out) {
 	if (!obd.readPID(PID_BAROMETRIC, barometer)) return false;
 
 	pressure_out = (float)(manifold - barometer);
+
+	return true;
+}
+
+bool DDGetBoostPSI(float& pressure_out) {
+	bool status = DDGetBoostKPA(pressure_out);
+
 	pressure_out *= 0.14503774f;
 
 	return true;

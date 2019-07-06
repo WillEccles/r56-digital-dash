@@ -8,7 +8,7 @@
 #include "obdwrapper.h"
 
 /* Initializes the OLED and anything related to it. */
-extern void initOLED();
+extern void initOLED(const byte& obdver);
 
 /* Put this inside of loop() */
 extern void updateOLED(const DashData_s& data);

@@ -15,6 +15,7 @@ struct DashData_s {
 	uint16_t	rpm;			// Engine rpm
 	float		fuel;			// Fuel level [0.0, 1.0]
 	float		voltage;		// Battery voltage
+	char*		VIN;			// Vehicle Identification Number
 
 	VehicleSpeed_s speed;		// Vehicle speed
 };
@@ -32,6 +33,9 @@ bool DDGetDashData(DashData_s& data_out);
 
 /* Get boost pressure in PSI */
 bool DDGetBoostPSI(float& pressure_out);
+
+/* Get boost pressure in kPa */
+bool DDGetBoostKPA(float& pressure_out);
 
 /* Get coolant temperature in degrees Celsius (-40 to +215) */
 bool DDGetCoolantTempC(int16_t& temp_out);
