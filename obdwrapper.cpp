@@ -1,14 +1,20 @@
 #include "obdwrapper.h"
 
+/* External Variables */
+
 COBD obd;
+SupportedCodes_s SupportedCodes;
 
 static char VIN[18] = "";
 
 bool DDGetDashData(DashData_s& data_out) {
-	return	DDGetBoostPSI(data_out.boost_pressure) &&
+	return	DDGetBoostKPA(data_out.boost_pressure) &&
 			DDGetCoolantTempC(data_out.coolant_temp) &&
 			DDGetEngineRPM(data_out.rpm) &&
 			DDGetVehicleSpeed(data_out.speed) &&
+			DDGetFuelLevel(data_out.fuel) &&
+			obd.readPID(PID_INTAKE_MAP, data_out.intake_map) &&
+			obd.readPID(PID_BAROMETRIC, data_out.barometric) &&
 			(data_out.VIN = VIN);
 }
 
@@ -26,6 +32,15 @@ bool DDInitOBD(byte& version_out) {
 		// not sure that the getVIN function does this, it seems it might not
 		VIN[17] = '\0';
 	}
+
+	// get the supported codes
+	SupportedCodes.barometric = obd.isValidPID(PID_BAROMETRIC);
+	SupportedCodes.intake_map = obd.isValidPID(PID_INTAKE_MAP);
+	SupportedCodes.coolant_temp = obd.isValidPID(PID_COOLANT_TEMP);
+	SupportedCodes.rpm = obd.isValidPID(PID_RPM);
+	SupportedCodes.fuel = obd.isValidPID(PID_FUEL_LEVEL);
+	SupportedCodes.voltage = obd.isValidPID(PID_BATTERY_VOLTAGE);
+	SupportedCodes.speed = obd.isValidPID(PID_SPEED);
 
 	return true;
 }
@@ -103,7 +118,7 @@ bool DDGetFuelLevel(float& fuel_out) {
 	// this is a change that I made in my fork of ArduinoOBD
 	// PR is open as of 2019-06-20; highly doubt it will be merged
 	// i only want a value in [0.0, 1.0]
-	fuel_out = (float)flevel / 100.0f;
+	fuel_out = (float)flevel;
 
 	return true;
 }

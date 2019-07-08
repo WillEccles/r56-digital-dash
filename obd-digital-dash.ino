@@ -79,7 +79,7 @@ void checkButtons() {
 unsigned long prevtime = 0UL;
 const unsigned long INTERVAL = 160; // 160ms is roughly 60Hz
 DashData_s d_data;
-bool status = true;
+bool status = false;
 
 void loop() {
 	checkButtons();

@@ -11,14 +11,30 @@ struct VehicleSpeed_s {
 // A structure designed to hold the most important data for the digital dash
 struct DashData_s {
 	float		boost_pressure;	// Boost pressure in PSI (converted from kPa)
+	int			intake_map;
+	int			barometric;
 	int16_t		coolant_temp;	// Coolant temperature in degress Celsius [-40, 215]
 	uint16_t	rpm;			// Engine rpm
-	float		fuel;			// Fuel level [0.0, 1.0]
+	float		fuel;			// Fuel level [0.0, 100.0]
 	float		voltage;		// Battery voltage
 	char*		VIN;			// Vehicle Identification Number
 
 	VehicleSpeed_s speed;		// Vehicle speed
 };
+
+// A structure that contains whether or not each OBD-II PID is supported.
+struct SupportedCodes_s {
+	bool barometric;
+	bool intake_map;
+	bool coolant_temp;
+	bool rpm;
+	bool fuel;
+	bool voltage;
+	bool speed;
+};
+
+// Defined elsewhere, but contains all (relevant) usable codes.
+extern SupportedCodes_s SupportedCodes;
 
 // This is here if it's necessary to use it, but you should avoid it.
 // The wrapper manages this object by itself, it's only here so you can
@@ -52,7 +68,7 @@ bool DDGetSpeedMPH(uint8_t& mph_out);
 /* Get vehicle speed as both kmh and mph */
 bool DDGetVehicleSpeed(VehicleSpeed_s& speed_out);
 
-/* Get the fuel level remaining as a fraction between 0 and 1 */
+/* Get the fuel level remaining as a float from 0.0 to 100.0 */
 bool DDGetFuelLevel(float& fuel_out);
 
 /* Get current voltage */
