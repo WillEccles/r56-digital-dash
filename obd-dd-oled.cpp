@@ -3,12 +3,11 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
-#define MODE_COUNT ((int32_t)3)
+#define MODE_COUNT ((int32_t)2)
 
 static const char* modes[MODE_COUNT] = {
 	"STAT",
 	"INFO",
-	"PIDS"
 };
 
 #define OLED_RESET 9
@@ -78,26 +77,24 @@ static void drawData(const DashData_s& data) {
 
 	// display coolant temp
 	display.setCursor(0, 32);
-	display.print("Temp:  ");
+	display.print("WTemp: ");
 	display.print(data.coolant_temp);
 	display.setCursor(ralign(1), 32);
 	display.print('C');
 
-	// display battery voltage
+	// display oil temp
 	display.setCursor(0, 40);
-	display.print("Barom: ");
-	display.print(data.barometric);
-	//display.print(data.voltage, 1);
-	display.setCursor(ralign(3), 40);
-	display.print("kPa");
+	display.print("OTemp: ");
+	display.print(data.oil_temp);
+	display.setCursor(ralign(1), 40);
+	display.print('C');
 
 	// display boost pressure
 	display.setCursor(0, 48);
-	display.print("MAP:   ");
-	display.print(data.intake_map);
-	//display.print(data.boost_pressure, 1);
+	display.print("Boost: ");
+	display.print(data.boost_pressure, 1);
 	display.setCursor(ralign(3), 48);
-	display.print("kPa");
+	display.print("PSI");
 }
 
 static void drawInfo() {
@@ -122,29 +119,6 @@ static void drawInfo() {
 	}
 }
 
-static void drawSupportedPIDS() {
-	display.setCursor(0, 0);
-	display.setTextColor(BLACK, WHITE);
-	display.print("                        ");
-	display.setTextColor(WHITE, BLACK);
-
-	display.setCursor(0, 8);
-	display.print("Barometric: ");
-	display.print((int)SupportedCodes.barometric);
-
-	display.setCursor(0, 16);
-	display.print("Intake MAP: ");
-	display.print((int)SupportedCodes.intake_map);
-
-	display.setCursor(0, 24);
-	display.print("Fuel level: ");
-	display.print((int)SupportedCodes.fuel);
-
-	display.setCursor(0, 32);
-	display.print("Voltage: ");
-	display.print((int)SupportedCodes.voltage, 1);
-}
-
 void updateOLED(const DashData_s& data) {
 	display.clearDisplay();
 
@@ -154,9 +128,6 @@ void updateOLED(const DashData_s& data) {
 		break;
 	case 1: // info
 		drawInfo();
-		break;
-	case 2:
-		drawSupportedPIDS();
 		break;
 	default:
 		break;

@@ -11,9 +11,8 @@ struct VehicleSpeed_s {
 // A structure designed to hold the most important data for the digital dash
 struct DashData_s {
 	float		boost_pressure;	// Boost pressure in PSI (converted from kPa)
-	int			intake_map;
-	int			barometric;
 	int16_t		coolant_temp;	// Coolant temperature in degress Celsius [-40, 215]
+	int16_t		oil_temp;		// Oil temperature in degress Celsius [-40, 215]
 	uint16_t	rpm;			// Engine rpm
 	float		fuel;			// Fuel level [0.0, 100.0]
 	float		voltage;		// Battery voltage
@@ -24,9 +23,9 @@ struct DashData_s {
 
 // A structure that contains whether or not each OBD-II PID is supported.
 struct SupportedCodes_s {
-	bool barometric;
 	bool intake_map;
 	bool coolant_temp;
+	bool oil_temp;
 	bool rpm;
 	bool fuel;
 	bool voltage;
@@ -55,6 +54,9 @@ bool DDGetBoostKPA(float& pressure_out);
 
 /* Get coolant temperature in degrees Celsius (-40 to +215) */
 bool DDGetCoolantTempC(int16_t& temp_out);
+
+/* Get oil temperature in degrees Celsius (-40 to +215) */
+bool DDGetOilTempC(int16_t& temp_out);
 
 /* Get engine RPM */
 bool DDGetEngineRPM(uint16_t& rpm_out);

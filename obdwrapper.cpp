@@ -8,14 +8,12 @@ SupportedCodes_s SupportedCodes;
 static char VIN[18] = "";
 
 bool DDGetDashData(DashData_s& data_out) {
-	return	DDGetBoostKPA(data_out.boost_pressure) &&
+	return	DDGetBoostPSI(data_out.boost_pressure) &&
 			DDGetCoolantTempC(data_out.coolant_temp) &&
+			//DDGetOilTempC(data_out.oil_temp) &&
 			DDGetEngineRPM(data_out.rpm) &&
 			DDGetVehicleSpeed(data_out.speed) &&
-			DDGetFuelLevel(data_out.fuel) &&
-			obd.readPID(PID_INTAKE_MAP, data_out.intake_map) &&
-			obd.readPID(PID_BAROMETRIC, data_out.barometric) &&
-			(data_out.VIN = VIN);
+			DDGetFuelLevel(data_out.fuel);
 }
 
 bool DDInitOBD(byte& version_out) {
@@ -34,9 +32,9 @@ bool DDInitOBD(byte& version_out) {
 	}
 
 	// get the supported codes
-	SupportedCodes.barometric = obd.isValidPID(PID_BAROMETRIC);
 	SupportedCodes.intake_map = obd.isValidPID(PID_INTAKE_MAP);
 	SupportedCodes.coolant_temp = obd.isValidPID(PID_COOLANT_TEMP);
+	SupportedCodes.oil_temp = obd.isValidPID(PID_ENGINE_OIL_TEMP);
 	SupportedCodes.rpm = obd.isValidPID(PID_RPM);
 	SupportedCodes.fuel = obd.isValidPID(PID_FUEL_LEVEL);
 	SupportedCodes.voltage = obd.isValidPID(PID_BATTERY_VOLTAGE);
@@ -47,12 +45,10 @@ bool DDInitOBD(byte& version_out) {
 
 bool DDGetBoostKPA(float& pressure_out) {
 	int manifold;
-	int barometer;
 
 	if (!obd.readPID(PID_INTAKE_MAP, manifold)) return false;
-	if (!obd.readPID(PID_BAROMETRIC, barometer)) return false;
 
-	pressure_out = (float)(manifold - barometer);
+	pressure_out = (float)manifold;
 
 	return true;
 }
@@ -67,6 +63,12 @@ bool DDGetBoostPSI(float& pressure_out) {
 
 bool DDGetCoolantTempC(int16_t& temp_out) {
 	if (!obd.readPID(PID_COOLANT_TEMP, temp_out)) return false;
+
+	return true;
+}
+
+bool DDGetOilTempC(int16_t& temp_out) {
+	if (!obd.readPID(PID_ENGINE_OIL_TEMP, temp_out)) return false;
 
 	return true;
 }

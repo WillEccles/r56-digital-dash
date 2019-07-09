@@ -84,7 +84,7 @@ bool status = false;
 void loop() {
 	checkButtons();
 
-	if (millis() - prevtime >= INTERVAL) {
+	//if (millis() - prevtime >= INTERVAL) {
 		// 1. get data
 		status = DDGetDashData(d_data);
 		if (!status) {
@@ -100,5 +100,5 @@ void loop() {
 #ifdef DD_OLED
 		updateOLED(d_data);
 #endif
-	}
+	//}
 }
