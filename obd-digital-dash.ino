@@ -31,6 +31,11 @@ void setup() {
 	pinMode(3, INPUT);
 	pinMode(4, INPUT);
 
+#ifdef DD_OLED
+	initOLED(obdver);
+	updateOLED_Startup();
+#endif
+
 	bool success = DDInitOBD(obdver);
 
 /*
@@ -41,10 +46,6 @@ void setup() {
 	mySerial.print('.');
 	mySerial.println(version % 10);
 */
-
-#ifdef DD_OLED
-	initOLED(obdver);
-#endif
 
 	// TODO: get error codes on startup and do something with them
 
@@ -82,7 +83,7 @@ DashData_s d_data;
 bool status = false;
 
 void loop() {
-	checkButtons();
+	//checkButtons();
 
 	//if (millis() - prevtime >= INTERVAL) {
 		// 1. get data
@@ -98,7 +99,8 @@ void loop() {
 
 		// 2. refresh/draw display
 #ifdef DD_OLED
-		updateOLED(d_data);
+		//updateOLED(d_data);
+		updateOLED_Debug();
 #endif
 	//}
 }

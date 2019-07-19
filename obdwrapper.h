@@ -23,13 +23,9 @@ struct DashData_s {
 
 // A structure that contains whether or not each OBD-II PID is supported.
 struct SupportedCodes_s {
-	bool intake_map;
-	bool coolant_temp;
 	bool oil_temp;
-	bool rpm;
-	bool fuel;
-	bool voltage;
-	bool speed;
+	bool turbo_rpm;  // 0x74
+	bool turbo_temp; // 0x75
 };
 
 // Defined elsewhere, but contains all (relevant) usable codes.

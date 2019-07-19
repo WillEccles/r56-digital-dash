@@ -32,13 +32,9 @@ bool DDInitOBD(byte& version_out) {
 	}
 
 	// get the supported codes
-	SupportedCodes.intake_map = obd.isValidPID(PID_INTAKE_MAP);
-	SupportedCodes.coolant_temp = obd.isValidPID(PID_COOLANT_TEMP);
 	SupportedCodes.oil_temp = obd.isValidPID(PID_ENGINE_OIL_TEMP);
-	SupportedCodes.rpm = obd.isValidPID(PID_RPM);
-	SupportedCodes.fuel = obd.isValidPID(PID_FUEL_LEVEL);
-	SupportedCodes.voltage = obd.isValidPID(PID_BATTERY_VOLTAGE);
-	SupportedCodes.speed = obd.isValidPID(PID_SPEED);
+	SupportedCodes.turbo_rpm = obd.isValidPID(PID_TURBO_RPM);
+	SupportedCodes.turbo_temp = obd.isValidPID(PID_TURBO_A_TEMP);
 
 	return true;
 }

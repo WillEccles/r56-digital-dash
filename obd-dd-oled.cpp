@@ -1,7 +1,12 @@
 #include "obd-dd-oled.h"
 
+#include "chloe_logo.h"
+
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
+
+#define LOGO_X ((SCREEN_WIDTH - CHLOE_LOGO_WIDTH) / 2)
+#define LOGO_Y ((SCREEN_HEIGHT - CHLOE_LOGO_HEIGHT) / 2)
 
 #define MODE_COUNT ((int32_t)2)
 
@@ -17,6 +22,8 @@ static int32_t dmode = 0;
 static byte _obdver = 0;
 
 static char* _vin = nullptr;
+
+const char* debugtitle = "Debug";
 
 static inline uint32_t ralign(const uint32_t& len) {
 	return 1 + SCREEN_WIDTH - (6 * len); // characters are 6px wide I think
@@ -151,6 +158,37 @@ void updateOLED(const DashData_s& data) {
 	}
 
 	// write buffer to hardware
+	display.display();
+}
+
+void updateOLED_Debug() {
+	display.clearDisplay();
+
+	// display mode title
+	display.setTextColor(BLACK, WHITE);
+	display.setCursor(calign(strlen(debugtitle)), 0);
+	display.print(debugtitle);
+	display.setTextColor(WHITE, BLACK);
+
+// convenience macro because this will have to change often, most likely
+#define __DISPPID__(pidname) {\
+		display.setCursor(0, 8*(__COUNTER__+1));\
+		display.print(#pidname ": ");\
+		display.print(SupportedCodes.pidname);\
+	}
+
+	__DISPPID__(oil_temp);
+	__DISPPID__(turbo_rpm);
+	__DISPPID__(turbo_temp);
+
+#undef __DISPPID__
+
+	display.display();
+}
+
+void updateOLED_Startup() {
+	display.clearDisplay();
+	display.drawBitmap(LOGO_X, LOGO_Y, chloe_logo, CHLOE_LOGO_WIDTH, CHLOE_LOGO_HEIGHT, WHITE);
 	display.display();
 }
 
