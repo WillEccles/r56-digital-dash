@@ -12,20 +12,20 @@
 // On Arduino UNO and those have no Serial1, we use software serial for output as the adapter uses Serial
 #ifdef ARDUINO_AVR_UNO
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(A2, A3);
+//SoftwareSerial mySerial(A2, A3);
 #else
-#define mySerial Serial
+//#define mySerial Serial
 #endif
 
 #if defined(ESP32) && !defined(Serial1)
-HardwareSerial Serial1(1);
+//HardwareSerial Serial1(1);
 #endif
 
 byte obdver;
 
 void setup() {
-	mySerial.begin(115200);
-	while (!mySerial);
+	//mySerial.begin(115200);
+	//while (!mySerial);
 
 	pinMode(LED_BUILTIN, OUTPUT);
 	pinMode(3, INPUT);
@@ -33,6 +33,7 @@ void setup() {
 
 #ifdef DD_OLED
 	initOLED(obdver);
+	dimOLED(true); // why not
 	updateOLED_Startup();
 #endif
 
@@ -77,30 +78,26 @@ void checkButtons() {
 	}
 }
 
-unsigned long prevtime = 0UL;
-const unsigned long INTERVAL = 160; // 160ms is roughly 60Hz
 DashData_s d_data;
 bool status = false;
 
 void loop() {
 	//checkButtons();
 
-	//if (millis() - prevtime >= INTERVAL) {
-		// 1. get data
-		status = DDGetDashData(d_data);
-		if (!status) {
-			d_data.rpm = millis() % 10000;
-			d_data.fuel = 0.95f;
-			d_data.coolant_temp = millis() % 99;
-			d_data.voltage = 12.1f;
-			d_data.boost_pressure = 10.4;
-			d_data.speed.mph = millis() % 120;
-		}
+	// 1. get data
+	status = DDGetDashData(d_data);
+	if (!status) {
+		d_data.rpm = millis() % 10000;
+		d_data.fuel = 0.95f;
+		d_data.coolant_temp = millis() % 99;
+		d_data.voltage = 12.1f;
+		d_data.boost_pressure = 10.4;
+		d_data.speed.mph = millis() % 120;
+	}
 
-		// 2. refresh/draw display
+	// 2. refresh/draw display
 #ifdef DD_OLED
-		//updateOLED(d_data);
-		updateOLED_Debug();
+	//updateOLED(d_data);
+	updateOLED_Debug();
 #endif
-	//}
 }

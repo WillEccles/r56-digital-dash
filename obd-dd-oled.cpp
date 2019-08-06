@@ -142,6 +142,8 @@ void updateOLED(const DashData_s& data) {
 
 	// display mode title
 	display.setTextColor(BLACK, WHITE);
+	display.setCursor(0,0);
+	display.print("                           ");
 	display.setCursor(calign(strlen(modes[dmode])), 0);
 	display.print(modes[dmode]);
 	display.setTextColor(WHITE, BLACK);
@@ -166,6 +168,8 @@ void updateOLED_Debug() {
 
 	// display mode title
 	display.setTextColor(BLACK, WHITE);
+	display.setCursor(0,0);
+	display.print("                           ");
 	display.setCursor(calign(strlen(debugtitle)), 0);
 	display.print(debugtitle);
 	display.setTextColor(WHITE, BLACK);
@@ -197,5 +201,9 @@ void nextModeOLED() {
 }
 
 void prevModeOLED() {
-	dmode = dmode ? dmode - 1 : MODE_COUNT - 1;
+	dmode = (dmode ? dmode : MODE_COUNT) - 1;
+}
+
+void dimOLED(bool dim) {
+	display.dim(dim);
 }

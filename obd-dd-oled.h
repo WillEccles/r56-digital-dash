@@ -25,4 +25,7 @@ extern void prevModeOLED();
 /* To be called when the "next mode" button is pressed. */
 extern void nextModeOLED();
 
+/* Enable or disable display dimming. */
+extern void dimOLED(bool dim);
+
 #endif
