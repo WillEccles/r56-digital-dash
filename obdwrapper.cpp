@@ -5,7 +5,7 @@
 COBD obd;
 SupportedCodes_s SupportedCodes;
 
-static char VIN[18] = "";
+//static char VIN[18] = "";
 
 bool DDGetDashData(DashData_s& data_out) {
 	return	DDGetBoostPSI(data_out.boost_pressure) &&
@@ -16,20 +16,19 @@ bool DDGetDashData(DashData_s& data_out) {
 			DDGetFuelLevel(data_out.fuel);
 }
 
-bool DDInitOBD(byte& version_out) {
-	version_out = obd.begin();
+bool DDInitOBD() {
+	if (!obd.begin()) return false;
+
 	obd.setBaudRate(115200UL);
 
-	while (!obd.init());
-
-	if (!version_out) return false;
+	if (!obd.init()) return false;
 
 	// get the VIN for use later (this is better than reading it more than once)
-	obd.getVIN(VIN, 18);
-	if (VIN[17]) { // VINs are 17 characters, and the 18th should be the null terminator
+	//obd.getVIN(VIN, 18);
+//	if (VIN[17]) { // VINs are 17 characters, and the 18th should be the null terminator
 		// not sure that the getVIN function does this, it seems it might not
-		VIN[17] = '\0';
-	}
+//		VIN[17] = '\0';
+//	}
 
 	// get the supported codes
 	SupportedCodes.oil_temp = obd.isValidPID(PID_ENGINE_OIL_TEMP);

@@ -16,7 +16,7 @@ struct DashData_s {
 	uint16_t	rpm;			// Engine rpm
 	float		fuel;			// Fuel level [0.0, 100.0]
 	float		voltage;		// Battery voltage
-	char*		VIN;			// Vehicle Identification Number
+	//char*		VIN;			// Vehicle Identification Number
 
 	VehicleSpeed_s speed;		// Vehicle speed
 };
@@ -37,7 +37,7 @@ extern SupportedCodes_s SupportedCodes;
 extern COBD obd;
 
 /* Initialize, returning version info and init status (true = good) */
-bool DDInitOBD(byte& verison_out);
+bool DDInitOBD();
 
 /* Get all the important data for the digital dash at once */
 bool DDGetDashData(DashData_s& data_out);

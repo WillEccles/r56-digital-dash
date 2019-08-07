@@ -8,7 +8,7 @@
 #include "obdwrapper.h"
 
 /* Initializes the OLED and anything related to it. */
-extern void initOLED(const byte& obdver);
+extern bool initOLED();
 
 /* Put this inside of loop() */
 extern void updateOLED(const DashData_s& data);
@@ -16,8 +16,8 @@ extern void updateOLED(const DashData_s& data);
 /* Updates the display to show just the set of supported PIDs and anything else debug-related. */
 extern void updateOLED_Debug();
 
-/* Use this to display stuff at startup. */
-extern void updateOLED_Startup();
+/* Use this to display the logo and a status. */
+extern void updateOLED_Logo();
 
 /* To be called when the "previous mode" button is pressed. */
 extern void prevModeOLED();

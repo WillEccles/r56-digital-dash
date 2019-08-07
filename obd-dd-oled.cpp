@@ -1,42 +1,30 @@
 #include "obd-dd-oled.h"
 
-#include "chloe_logo.h"
+//#include "chloe_logo.h"
+#include "cactus_logo.h"
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
-#define LOGO_X ((SCREEN_WIDTH - CHLOE_LOGO_WIDTH) / 2)
-#define LOGO_Y ((SCREEN_HEIGHT - CHLOE_LOGO_HEIGHT) / 2)
+#define LOGO_X (((SCREEN_WIDTH - CACTUS_LOGO_WIDTH) / 2) + (CACTUS_LOGO_PADDING / 2))
+#define LOGO_Y ((SCREEN_HEIGHT - CACTUS_LOGO_HEIGHT) / 2)
 
-#define MODE_COUNT ((int32_t)2)
+#define MODE_COUNT ((uint8_t)2)
 
-static const char* modes[MODE_COUNT] = {
-	"STAT",
-	"INFO",
-};
+const PROGMEM char modes[] = "STAT\0INFO";
 
 #define OLED_RESET 9
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-static int32_t dmode = 0;
-static byte _obdver = 0;
+uint8_t dmode = 0;
 
-static char* _vin = nullptr;
+const PROGMEM char debugtitle[] = "Debug";
 
-const char* debugtitle = "Debug";
+#define RALIGN(len) (1 + SCREEN_WIDTH - (6 * (len)))
+#define CALIGN(len) (1 + (SCREEN_WIDTH / 2) - (6 * (len) / 2))
 
-static inline uint32_t ralign(const uint32_t& len) {
-	return 1 + SCREEN_WIDTH - (6 * len); // characters are 6px wide I think
-}
-
-static inline uint32_t calign(const uint32_t& len) {
-	return 1 + (SCREEN_WIDTH / 2) - (6 * len / 2);
-}
-
-void initOLED(const byte& obdver) {
-	_obdver = obdver;
-
-	display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+bool initOLED() {
+	if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) return false;
 
 	// make sure the display is cleared
 	display.clearDisplay();
@@ -47,64 +35,60 @@ void initOLED(const byte& obdver) {
 	display.setTextColor(WHITE);
 	display.setTextWrap(false);
 	display.cp437(true);
+
+	return true;
 }
 
-static void drawData(const DashData_s& data) {
-	if (_vin == nullptr) {
-		_vin = data.VIN;
-	}
-
-	display.setTextColor(BLACK, WHITE);
-	display.setCursor(0, 0);
-	display.print("Stat                              "); // make sure the whole top is white
-	display.setCursor(ralign(4), 0);
-	display.print("Unit");
-	display.setTextColor(WHITE, BLACK);
+void drawData(const DashData_s& data) {
+	//if (_vin == nullptr) {
+		//_vin = data.VIN;
+	//}
 
 	// print RPM
 	display.setCursor(0, 8);
 	display.print("Revs:  ");
 	display.print(data.rpm);
-	display.setCursor(ralign(3), 8);
+	display.setCursor(RALIGN(3), 8);
 	display.print("RPM");
 
 	// print speed
 	display.setCursor(0, 16);
 	display.print("Spd:   ");
 	display.print(data.speed.mph);
-	display.setCursor(ralign(3), 16);
+	display.setCursor(RALIGN(3), 16);
 	display.print("MPH");
 
 	// print fuel
 	display.setCursor(0, 24);
 	display.print("Fuel:  ");
 	display.print(data.fuel, 0);
-	display.setCursor(ralign(1), 24);
+	display.setCursor(RALIGN(1), 24);
 	display.print('%');
 
 	// display coolant temp
 	display.setCursor(0, 32);
 	display.print("WTemp: ");
 	display.print(data.coolant_temp);
-	display.setCursor(ralign(1), 32);
+	display.setCursor(RALIGN(1), 32);
 	display.print('C');
 
 	// display oil temp
 	display.setCursor(0, 40);
 	display.print("OTemp: ");
 	display.print(data.oil_temp);
-	display.setCursor(ralign(1), 40);
+	display.setCursor(RALIGN(1), 40);
 	display.print('C');
 
 	// display boost pressure
 	display.setCursor(0, 48);
 	display.print("Boost: ");
 	display.print(data.boost_pressure, 1);
-	display.setCursor(ralign(3), 48);
+	display.setCursor(RALIGN(3), 48);
 	display.print("PSI");
 }
 
 static void drawInfo() {
+#if 0
 	display.setCursor(0, 0);
 	display.setTextColor(BLACK, WHITE);
 	display.print("                      ");
@@ -124,6 +108,7 @@ static void drawInfo() {
 		display.setCursor(0, 16);
 		display.print(_vin);
 	}
+#endif
 }
 
 void updateOLED(const DashData_s& data) {
@@ -134,7 +119,7 @@ void updateOLED(const DashData_s& data) {
 		drawData(data);
 		break;
 	case 1: // info
-		drawInfo();
+		//drawInfo();
 		break;
 	default:
 		break;
@@ -144,8 +129,8 @@ void updateOLED(const DashData_s& data) {
 	display.setTextColor(BLACK, WHITE);
 	display.setCursor(0,0);
 	display.print("                           ");
-	display.setCursor(calign(strlen(modes[dmode])), 0);
-	display.print(modes[dmode]);
+	display.setCursor(CALIGN(4), 0);
+	display.print(modes[dmode*4]);
 	display.setTextColor(WHITE, BLACK);
 
 	// display modes
@@ -154,7 +139,7 @@ void updateOLED(const DashData_s& data) {
 		if (dmode == i) {
 			display.setTextColor(BLACK, WHITE);
 		}
-		display.print(modes[i]);
+		display.print(modes[i*4]);
 		display.setTextColor(WHITE, BLACK);
 		display.print(' ');
 	}
@@ -170,7 +155,7 @@ void updateOLED_Debug() {
 	display.setTextColor(BLACK, WHITE);
 	display.setCursor(0,0);
 	display.print("                           ");
-	display.setCursor(calign(strlen(debugtitle)), 0);
+	display.setCursor(CALIGN(strlen(debugtitle)), 0);
 	display.print(debugtitle);
 	display.setTextColor(WHITE, BLACK);
 
@@ -190,9 +175,9 @@ void updateOLED_Debug() {
 	display.display();
 }
 
-void updateOLED_Startup() {
+void updateOLED_Logo() {
 	display.clearDisplay();
-	display.drawBitmap(LOGO_X, LOGO_Y, chloe_logo, CHLOE_LOGO_WIDTH, CHLOE_LOGO_HEIGHT, WHITE);
+	display.drawBitmap(LOGO_X, LOGO_Y, cactus_logo, CACTUS_LOGO_WIDTH, CACTUS_LOGO_HEIGHT, WHITE);
 	display.display();
 }
 

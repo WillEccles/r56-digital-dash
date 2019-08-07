@@ -2,5 +2,6 @@
     "programmer": "AVRISP mkII",
     "board": "arduino:avr:uno",
     "port": "COM3",
-    "sketch": "obd-digital-dash.ino"
+    "sketch": "obd-digital-dash.ino",
+    "output": "../build/r56-digital-dash"
 }

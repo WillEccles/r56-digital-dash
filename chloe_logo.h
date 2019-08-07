@@ -5,8 +5,12 @@
 
 #include <Arduino.h>
 
+// Width of chloe_logo
 #define CHLOE_LOGO_WIDTH 64
+// Height of chloe_logo
 #define CHLOE_LOGO_HEIGHT 22
+// Horizontal padding for chloe_logo
+#define CHLOE_LOGO_PADDING 0
 
 const PROGMEM uint8_t chloe_logo[] = {
 B00000001,B11000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,
