@@ -3,7 +3,7 @@
 
 #include <OBD2UART.h>
 
-struct VehicleSpeed_s {
+union VehicleSpeed_s {
 	uint8_t kmh;	// Vehicle speed in KMH [0, 255]
 	uint8_t mph;	// Vehicle speed in MPH [0, 158]
 };
@@ -12,24 +12,14 @@ struct VehicleSpeed_s {
 struct DashData_s {
 	float		boost_pressure;	// Boost pressure in PSI (converted from kPa)
 	int16_t		coolant_temp;	// Coolant temperature in degress Celsius [-40, 215]
-	int16_t		oil_temp;		// Oil temperature in degress Celsius [-40, 215]
 	uint16_t	rpm;			// Engine rpm
+	uint32_t	turbo_rpm;		// Turbo RPM
+	uint16_t	turbo_temp;		// Turbo temp (Celsius)
 	float		fuel;			// Fuel level [0.0, 100.0]
 	float		voltage;		// Battery voltage
-	//char*		VIN;			// Vehicle Identification Number
 
 	VehicleSpeed_s speed;		// Vehicle speed
 };
-
-// A structure that contains whether or not each OBD-II PID is supported.
-struct SupportedCodes_s {
-	bool oil_temp;
-	bool turbo_rpm;  // 0x74
-	bool turbo_temp; // 0x75
-};
-
-// Defined elsewhere, but contains all (relevant) usable codes.
-extern SupportedCodes_s SupportedCodes;
 
 // This is here if it's necessary to use it, but you should avoid it.
 // The wrapper manages this object by itself, it's only here so you can
@@ -51,9 +41,6 @@ bool DDGetBoostKPA(float& pressure_out);
 /* Get coolant temperature in degrees Celsius (-40 to +215) */
 bool DDGetCoolantTempC(int16_t& temp_out);
 
-/* Get oil temperature in degrees Celsius (-40 to +215) */
-bool DDGetOilTempC(int16_t& temp_out);
-
 /* Get engine RPM */
 bool DDGetEngineRPM(uint16_t& rpm_out);
 
@@ -68,6 +55,12 @@ bool DDGetVehicleSpeed(VehicleSpeed_s& speed_out);
 
 /* Get the fuel level remaining as a float from 0.0 to 100.0 */
 bool DDGetFuelLevel(float& fuel_out);
+
+/* Get the turbo RPM. */
+bool DDGetTurboRPM(uint32_t& rpm_out);
+
+/* Get the turbo temperature in Celsius. */
+bool DDGetTurboTempC(uint16_t& temp_out);
 
 /* Get current voltage */
 void DDGetVoltage(float& volts_out);

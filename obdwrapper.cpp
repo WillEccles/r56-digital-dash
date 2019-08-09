@@ -3,7 +3,6 @@
 /* External Variables */
 
 COBD obd;
-SupportedCodes_s SupportedCodes;
 
 //static char VIN[18] = "";
 
@@ -13,7 +12,9 @@ bool DDGetDashData(DashData_s& data_out) {
 			//DDGetOilTempC(data_out.oil_temp) &&
 			DDGetEngineRPM(data_out.rpm) &&
 			DDGetVehicleSpeed(data_out.speed) &&
-			DDGetFuelLevel(data_out.fuel);
+			DDGetFuelLevel(data_out.fuel) &&
+			DDGetTurboRPM(data_out.turbo_rpm) &&
+			DDGetTurboTempC(data_out.turbo_temp);
 }
 
 bool DDInitOBD() {
@@ -22,18 +23,6 @@ bool DDInitOBD() {
 	obd.setBaudRate(115200UL);
 
 	if (!obd.init()) return false;
-
-	// get the VIN for use later (this is better than reading it more than once)
-	//obd.getVIN(VIN, 18);
-//	if (VIN[17]) { // VINs are 17 characters, and the 18th should be the null terminator
-		// not sure that the getVIN function does this, it seems it might not
-//		VIN[17] = '\0';
-//	}
-
-	// get the supported codes
-	SupportedCodes.oil_temp = obd.isValidPID(PID_ENGINE_OIL_TEMP);
-	SupportedCodes.turbo_rpm = obd.isValidPID(PID_TURBO_RPM);
-	SupportedCodes.turbo_temp = obd.isValidPID(PID_TURBO_A_TEMP);
 
 	return true;
 }
@@ -58,12 +47,6 @@ bool DDGetBoostPSI(float& pressure_out) {
 
 bool DDGetCoolantTempC(int16_t& temp_out) {
 	if (!obd.readPID(PID_COOLANT_TEMP, temp_out)) return false;
-
-	return true;
-}
-
-bool DDGetOilTempC(int16_t& temp_out) {
-	if (!obd.readPID(PID_ENGINE_OIL_TEMP, temp_out)) return false;
 
 	return true;
 }
@@ -126,4 +109,24 @@ void DDGetVoltage(float& volts_out) {
 
 uint8_t DDKMHtoMPH(uint8_t kmh) {
 	return (uint8_t)((float)kmh * 0.62137119f);
+}
+
+bool DDGetTurboRPM(uint32_t& rpm_out) {
+	int r;
+
+	if (!obd.readPID(PID_TURBO_RPM, r)) return false;
+
+	rpm_out = (uint32_t)r;
+
+	return true;
+}
+
+bool DDGetTurboTempC(uint16_t& temp_out) {
+	int r;
+
+	if (!obd.readPID(PID_TURBO_A_TEMP, r)) return false;
+
+	temp_out = (uint16_t)r;
+
+	return true;
 }

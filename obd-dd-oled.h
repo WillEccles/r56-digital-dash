@@ -18,13 +18,13 @@ extern void updateOLED_Debug();
 
 /* Use this to display the logo and a status. */
 extern void updateOLED_Logo();
-
+#if 0
 /* To be called when the "previous mode" button is pressed. */
 extern void prevModeOLED();
 
 /* To be called when the "next mode" button is pressed. */
 extern void nextModeOLED();
-
+#endif
 /* Enable or disable display dimming. */
 extern void dimOLED(bool dim);
 

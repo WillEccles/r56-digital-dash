@@ -104,8 +104,9 @@ void loop() {
 		} else {
 			updateOLED_Logo();
 		}
+		//updateOLED_Debug();
 	} else {
 		updateOLED_Logo();
-		DDInitOBD();
+		initd = DDInitOBD();
 	}
 }
