@@ -6,15 +6,17 @@ COBD obd;
 
 //static char VIN[18] = "";
 
+static int barom = 0;
+
 bool DDGetDashData(DashData_s& data_out) {
 	return	DDGetBoostPSI(data_out.boost_pressure) &&
 			DDGetCoolantTempC(data_out.coolant_temp) &&
 			//DDGetOilTempC(data_out.oil_temp) &&
 			DDGetEngineRPM(data_out.rpm) &&
 			DDGetVehicleSpeed(data_out.speed) &&
-			DDGetFuelLevel(data_out.fuel) &&
-			DDGetTurboRPM(data_out.turbo_rpm) &&
-			DDGetTurboTempC(data_out.turbo_temp);
+			DDGetFuelLevel(data_out.fuel);// &&
+			//DDGetTurboRPM(data_out.turbo_rpm) &&
+			//DDGetTurboTempC(data_out.turbo_temp);
 }
 
 bool DDInitOBD() {
@@ -29,18 +31,24 @@ bool DDInitOBD() {
 
 bool DDGetBoostKPA(float& pressure_out) {
 	int manifold;
+	int barom;
 
 	if (!obd.readPID(PID_INTAKE_MAP, manifold)) return false;
+	if (!obd.readPID(PID_BAROMETRIC, barom)) return false;
 
-	pressure_out = (float)manifold;
+	pressure_out = (float)manifold - (float)barom;
 
 	return true;
 }
 
 bool DDGetBoostPSI(float& pressure_out) {
-	bool status = DDGetBoostKPA(pressure_out);
+	int manifold;
+	int barom;
 
-	pressure_out *= 0.14503774f;
+	if (!obd.readPID(PID_INTAKE_MAP, manifold)) return false;
+	if (!obd.readPID(PID_BAROMETRIC, barom)) return false;
+
+	pressure_out = KPA_PSI_TABLE[manifold] - KPA_PSI_TABLE[barom];
 
 	return true;
 }
@@ -94,11 +102,7 @@ bool DDGetFuelLevel(float& fuel_out) {
 
 	if (!obd.readPID(PID_FUEL_LEVEL, flevel)) return false;
 
-	// returned value is an int [0, 100]
-	// this is a change that I made in my fork of ArduinoOBD
-	// PR is open as of 2019-06-20; highly doubt it will be merged
-	// i only want a value in [0.0, 1.0]
-	fuel_out = (float)flevel;
+	fuel_out = PERCENT_TABLE[flevel];
 
 	return true;
 }

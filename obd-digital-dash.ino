@@ -12,17 +12,20 @@
 // On Arduino Leonardo, Micro, MEGA or DUE, hardware serial can be used for output as the adapter occupies Serial1
 // On Arduino UNO and those have no Serial1, we use software serial for output as the adapter uses Serial
 #ifdef ARDUINO_AVR_UNO
-//#include <SoftwareSerial.h>
-//SoftwareSerial mySerial(A2, A3);
+#include <SoftwareSerial.h>
+SoftwareSerial mySerial(A2, A3);
 #else
-//#define mySerial Serial
+#define mySerial Serial
 #endif
 
 #if defined(ESP32) && !defined(Serial1)
-//HardwareSerial Serial1(1);
+HardwareSerial Serial1(1);
 #endif
 
 void setup() {
+	Serial.begin(9600);
+	while (!Serial);
+
 	pinMode(LED_BUILTIN, OUTPUT);
 	digitalWrite(LED_BUILTIN, LOW);
 	//pinMode(3, INPUT);
@@ -30,16 +33,10 @@ void setup() {
 
 #ifdef DD_OLED
 	if (initOLED()) {
-		digitalWrite(LED_BUILTIN, HIGH);
+		Serial.println("Initialized OLED.");
 	}
 	dimOLED(true); // why not
 #endif
-
-	DDInitOBD();
-
-	// TODO: get error codes on startup and do something with them
-
-	//digitalWrite(LED_BUILTIN, status); // turn on the user LED to show we finished init
 }
 
 #if 0
@@ -102,11 +99,17 @@ void loop() {
 		if (DDGetDashData(d_data)) {
 			updateOLED(d_data);
 		} else {
-			updateOLED_Logo();
+			Serial.println("Error getting OBD data.");
+			updateOLED_Logo("Standby");
 		}
 		//updateOLED_Debug();
 	} else {
-		updateOLED_Logo();
+		updateOLED_Logo("Initializing...");
 		initd = DDInitOBD();
+		if (initd) {
+			updateOLED_Logo("Standby");
+			Serial.println("Initialized OBD.");
+			digitalWrite(LED_BUILTIN, HIGH);
+		}
 	}
 }

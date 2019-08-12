@@ -17,7 +17,7 @@ const PROGMEM char debugtitle[] = "Debug";
 #endif
 
 #define OLED_RESET 9
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET, 1000000UL, 1000000UL);
 
 //uint8_t dmode = 0;
 
@@ -75,7 +75,7 @@ void drawData(const DashData_s& data) {
 
 	// display boost pressure
 	display.setCursor(0, 32);
-	display.print("Boost: ");
+	display.print("Vac/Boost:  ");
 	display.print(data.boost_pressure, 1);
 	display.setCursor(RALIGN(3), 48);
 	display.print("PSI");
@@ -87,7 +87,7 @@ void drawData(const DashData_s& data) {
 	display.setCursor(RALIGN(1), 40);
 	display.print('C');
 
-	// display turbo temp
+	// display turbo rpm
 	display.setCursor(0, 48);
 	display.print("Turbo RPM:  ");
 	display.print(data.turbo_rpm);
@@ -167,8 +167,12 @@ void updateOLED_Debug() {
 	display.display();
 }
 
-void updateOLED_Logo() {
+void updateOLED_Logo(const char* status) {
 	display.clearDisplay();
+	if (status != nullptr) {
+		display.setCursor(CALIGN(strlen(status)), 48);
+		display.print(status);
+	}
 	display.drawBitmap(LOGO_X, LOGO_Y, cactus_logo, CACTUS_LOGO_WIDTH, CACTUS_LOGO_HEIGHT, WHITE);
 	display.display();
 }

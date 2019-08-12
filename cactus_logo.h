@@ -12,7 +12,7 @@
 // Horizontal padding for cactus_logo
 #define CACTUS_LOGO_PADDING 7
 
-const PROGMEM uint8_t cactus_logo[] = {
+const uint8_t cactus_logo[] PROGMEM = {
 B00000001,B11000000,B00000000,
 B00000010,B00100000,B00000000,
 B00000100,B00010000,B00000000,

@@ -16,8 +16,8 @@ extern void updateOLED(const DashData_s& data);
 /* Updates the display to show just the set of supported PIDs and anything else debug-related. */
 extern void updateOLED_Debug();
 
-/* Use this to display the logo and a status. */
-extern void updateOLED_Logo();
+/* Use this to display the logo and an optional status (NULL if not required). */
+extern void updateOLED_Logo(const char* status);
 #if 0
 /* To be called when the "previous mode" button is pressed. */
 extern void prevModeOLED();

@@ -2,6 +2,7 @@
 #define DD_OBD_WRAPPER_H
 
 #include <OBD2UART.h>
+#include "tables.h"
 
 union VehicleSpeed_s {
 	uint8_t kmh;	// Vehicle speed in KMH [0, 255]
@@ -10,7 +11,7 @@ union VehicleSpeed_s {
 
 // A structure designed to hold the most important data for the digital dash
 struct DashData_s {
-	float		boost_pressure;	// Boost pressure in PSI (converted from kPa)
+	float		boost_pressure;	// Boost/vac pressure in PSI (converted from kPa)
 	int16_t		coolant_temp;	// Coolant temperature in degress Celsius [-40, 215]
 	uint16_t	rpm;			// Engine rpm
 	uint32_t	turbo_rpm;		// Turbo RPM
