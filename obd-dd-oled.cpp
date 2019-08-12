@@ -49,37 +49,38 @@ void drawData(const DashData_s& data) {
 	display.setCursor(0, 0);
 	display.print("Revs:  ");
 	display.print(data.rpm);
-	display.setCursor(RALIGN(3), 8);
+	display.setCursor(RALIGN(3), 0);
 	display.print("RPM");
 
 	// print speed
 	display.setCursor(0, 8);
 	display.print("Spd:   ");
 	display.print(data.speed.mph);
-	display.setCursor(RALIGN(3), 16);
+	display.setCursor(RALIGN(3), 8);
 	display.print("MPH");
 
 	// print fuel
 	display.setCursor(0, 16);
 	display.print("Fuel:  ");
 	display.print(data.fuel, 0);
-	display.setCursor(RALIGN(1), 24);
+	display.setCursor(RALIGN(1), 16);
 	display.print('%');
 
 	// display coolant temp
 	display.setCursor(0, 24);
 	display.print("WTemp: ");
 	display.print(data.coolant_temp);
-	display.setCursor(RALIGN(1), 32);
+	display.setCursor(RALIGN(1), 24);
 	display.print('C');
 
 	// display boost pressure
 	display.setCursor(0, 32);
 	display.print("Vac/Boost:  ");
 	display.print(data.boost_pressure, 1);
-	display.setCursor(RALIGN(3), 48);
+	display.setCursor(RALIGN(3), 32);
 	display.print("PSI");
 
+#if 0
 	// display turbo temp
 	display.setCursor(0, 40);
 	display.print("Turbo Temp: ");
@@ -93,6 +94,7 @@ void drawData(const DashData_s& data) {
 	display.print(data.turbo_rpm);
 	display.setCursor(RALIGN(3), 48);
 	display.print("RPM");
+#endif
 }
 
 static void drawInfo() {
