@@ -2,7 +2,6 @@
 #define DD_OBD_WRAPPER_H
 
 #include <OBD2UART.h>
-#include "tables.h"
 
 union VehicleSpeed_s {
 	uint8_t kmh;	// Vehicle speed in KMH [0, 255]
