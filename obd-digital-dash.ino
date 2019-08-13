@@ -3,10 +3,14 @@
 //#include <MsTimer2.h>
 
 // set this to either DD_OLED or DD_TFT to set which display backend to use
-#define DD_OLED
+#undef DD_OLED
+#define DD_TFT
 
 #ifdef DD_OLED
 #include "obd-dd-oled.h"
+#endif
+#ifdef DD_TFT
+#include "obd-dd-tft.h"
 #endif
 
 // On Arduino Leonardo, Micro, MEGA or DUE, hardware serial can be used for output as the adapter occupies Serial1
@@ -36,6 +40,11 @@ void setup() {
 		Serial.println("Initialized OLED.");
 	}
 	dimOLED(true); // why not
+#endif
+#ifdef DD_TFT
+	if (initTFT()) {
+		Serial.println("Initialized TFT.");
+	}
 #endif
 }
 
@@ -95,21 +104,43 @@ static void timerinterrupt() {
 bool initd = false;
 
 void loop() {
+	/*
 	if (initd) {
 		if (DDGetDashData(d_data)) {
+#ifdef DD_OLED
 			updateOLED(d_data);
+#endif
+#ifdef DD_TFT
+			updateTFT(d_data);
+#endif
 		} else {
 			Serial.println("Error getting OBD data.");
+#ifdef DD_OLED
 			updateOLED_Logo("Standby");
+#endif
 		}
 		//updateOLED_Debug();
 	} else {
+#ifdef DD_OLED
 		updateOLED_Logo("Initializing...");
+#endif
 		initd = DDInitOBD();
 		if (initd) {
+#ifdef DD_OLED
 			updateOLED_Logo("Standby");
+#endif
 			Serial.println("Initialized OBD.");
 			digitalWrite(LED_BUILTIN, HIGH);
 		}
 	}
+	*/
+#if 0
+	d_data.rpm = millis() % 10000;
+	d_data.fuel = 0.95f;
+	d_data.coolant_temp = millis() % 99;
+	d_data.voltage = 12.1f;
+	d_data.boost_pressure = 10.4;
+	d_data.speed.mph = millis() % 120;
+	updateTFT(d_data);
+#endif
 }

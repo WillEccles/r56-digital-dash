@@ -1,8 +1,7 @@
 {
     "programmer": "AVRISP mkII",
-    "board": "arduino:avr:mega",
-    "port": "COM8",
+    "board": "arduino:avr:uno",
+    "port": "COM3",
     "sketch": "obd-digital-dash.ino",
-    "output": "../build/r56-digital-dash",
-    "configuration": "cpu=atmega2560"
+    "output": "../build/r56-digital-dash"
 }
