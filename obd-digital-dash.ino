@@ -44,7 +44,10 @@ void setup() {
 #ifdef DD_TFT
 	if (initTFT()) {
 		Serial.println("Initialized TFT.");
-	}
+        digitalWrite(LED_BUILTIN, HIGH);
+	} else {
+        Serial.println("Failed to initialize TFT.");
+    }
 #endif
 }
 
@@ -134,7 +137,7 @@ void loop() {
 		}
 	}
 	*/
-#if 0
+#if 1
 	d_data.rpm = millis() % 10000;
 	d_data.fuel = 0.95f;
 	d_data.coolant_temp = millis() % 99;
@@ -142,5 +145,6 @@ void loop() {
 	d_data.boost_pressure = 10.4;
 	d_data.speed.mph = millis() % 120;
 	updateTFT(d_data);
+    delay(16);
 #endif
 }
